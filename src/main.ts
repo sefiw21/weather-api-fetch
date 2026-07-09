@@ -1,30 +1,40 @@
 import "./style.css";
 import { fetchWeather } from "./api/WeatherApi";
-import type { WeatherResponse } from "./types/WeatherResponse";
 import { RenderWeatherForcast } from "./render/WeatherForcast";
+import { getElementSafe } from "./utils/dom";
+import type { WeatherResponse } from "./types/WeatherResponse";
 
+const listContainer = getElementSafe<HTMLUListElement>("weatherList");
+const btn = getElementSafe<HTMLButtonElement>("loadMoreBtn");
+
+// State variables
 let weatherData: WeatherResponse | null = null;
 let hoursToShow = 24;
 
-const listContainer = document.getElementById("weatherList") as HTMLUListElement;
-const btn = document.getElementById("loadMoreBtn") as HTMLButtonElement;
-
+// Handle the Load More click
 btn.addEventListener("click", () => {
   if (!weatherData) return;
   hoursToShow += 24;
-  RenderWeatherForcast(weatherData, hoursToShow); // Pass the updated state to the view
+  RenderWeatherForcast(weatherData, hoursToShow);
 });
 
-// initialization
 async function init() {
-  listContainer.innerHTML = '<li class="text-white">Loading data...</li>';
+  listContainer.innerHTML = `
+    <li class="p-4 text-center text-blue-300 font-bold animate-pulse bg-blue-900 rounded-lg">
+      Loading forecast...
+    </li>
+  `;
+
   try {
     weatherData = await fetchWeather(); 
-    btn.classList.remove("hidden");    
-    RenderWeatherForcast(weatherData, hoursToShow); // Pass the fetched data to the view              
+    RenderWeatherForcast(weatherData, hoursToShow); 
   } catch (error) {
-    listContainer.innerHTML = '<li class="text-red-500">Error loading data</li>';
-    console.error(error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    listContainer.innerHTML = `
+      <li class="p-4 text-center text-red-400 bg-red-950 border border-red-800 rounded-lg font-bold shadow-md">
+        ${errorMessage}
+      </li>
+    `;
   }
 }
 

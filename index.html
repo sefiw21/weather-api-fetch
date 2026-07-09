@@ -4,10 +4,47 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>weather-api-fetch</title>
+    <title>Typed API Consumer</title>
   </head>
-  <body>
-    <div id="app"></div>
+  <body class=" min-h-screen font-sans text-blue-100">
+    <div id="app" class="p-8 flex justify-center">
+      <div class="w-200 bg-blue-950 flex flex-col justify-center gap-6 rounded-xl shadow-lg border border-blue-900 p-6">
+        
+        <div>
+          <h1 class="text-3xl font-bold text-blue-300 text-center mb-2">Ethiopia Forecast</h1>
+          <div id="metaInfo" class=" grid grid-cols-4 text-center items-center text-xs font-semibold text-blue-400 bg-blue-950/40 border border-blue-900/60 rounded-xl py-2.5 px-3 mb-4 backdrop-blur-sm shadow-inner">
+  
+  <div class="border-r border-blue-900/40 last:border-0">
+    <span class="block text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Latitude</span>
+    <span id="lat" class="text-blue-200 font-mono text-sm">--</span>
+  </div>
+  
+  <div class="border-r border-blue-900/40 last:border-0">
+    <span class="block text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Longitude</span>
+    <span id="lon" class="text-blue-200 font-mono text-sm">--</span>
+  </div>
+  
+  <div class="border-r border-blue-900/40 last:border-0">
+    <span class="block text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Elevation</span>
+    <span class="text-blue-200 font-mono text-sm"><span id="elev">--</span>m</span>
+  </div>
+  
+  <div class="last:border-0 truncate px-1">
+    <span class="block text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Timezone</span>
+    <span id="tz" class="text-blue-200 text-xs tracking-tight block truncate">--</span>
+  </div>
+
+</div>
+        </div>
+
+        <ul id="weatherList" class="flex flex-col gap-3"></ul> 
+        
+        <button id="loadMoreBtn" class="px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg hidden w-full transition-colors shadow-md">
+          Load Next 24 Hours
+        </button>
+        
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
