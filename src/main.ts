@@ -1,38 +1,35 @@
 import "./style.css";
 import { fetchWeather } from "./api/WeatherApi";
-import { RenderWeatherForcast } from "./render/WeatherForcast";
-import { getElementSafe } from "./utils/dom";
+
 import type { WeatherResponse } from "./types/WeatherResponse";
+import { uiElements } from "./utils/dom";
+import { renderWeatherForecast } from "./render/WeatherForecast";
 
-const listContainer = getElementSafe<HTMLUListElement>("weatherList");
-const btn = getElementSafe<HTMLButtonElement>("loadMoreBtn");
-
-// State variables
 let weatherData: WeatherResponse | null = null;
 let hoursToShow = 24;
 
 // Handle the Load More click
-btn.addEventListener("click", () => {
+uiElements.loadBtn.addEventListener("click", () => {
   if (!weatherData) return;
   hoursToShow += 24;
-  RenderWeatherForcast(weatherData, hoursToShow);
+  renderWeatherForecast(weatherData, hoursToShow);
 });
 
 async function init() {
-  listContainer.innerHTML = `
-    <li class="p-4 text-center text-blue-300 font-bold animate-pulse bg-blue-900 rounded-lg">
+  uiElements.list.innerHTML = `
+    <li class="p-4 text-center text-blue-200/80 font-bold animate-pulse bg-blue-900/40 backdrop-blur-md rounded-xl border border-blue-800/50 shadow-lg">
       Loading forecast...
     </li>
   `;
 
   try {
     weatherData = await fetchWeather(); 
-    RenderWeatherForcast(weatherData, hoursToShow); 
+    renderWeatherForecast(weatherData, hoursToShow); 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-    listContainer.innerHTML = `
-      <li class="p-4 text-center text-red-400 bg-red-950 border border-red-800 rounded-lg font-bold shadow-md">
-        ${errorMessage}
+    uiElements.list.innerHTML = `
+      <li class="p-4 text-center text-red-300 bg-red-950/60 backdrop-blur-md border border-red-800/50 rounded-xl font-bold shadow-lg">
+         ${errorMessage}
       </li>
     `;
   }

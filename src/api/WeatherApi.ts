@@ -1,8 +1,16 @@
 import type { WeatherResponse } from "../types/WeatherResponse";
 
-export async function fetchWeather(): Promise<WeatherResponse> {
-  // forcast fetch for Central Ethiopia
-  const url = "https://api.open-meteo.com/v1/forecast?latitude=9.145&longitude=40.489&hourly=temperature_2m";
+export interface FetchWeatherParams {
+  latitude?: number;
+  longitude?: number;
+}
+
+// take ethiopia coordinate data as defauld it will scall for the feature upgrade 
+export async function fetchWeather({
+  latitude = 9.145,
+  longitude = 40.489
+}: FetchWeatherParams = {}): Promise<WeatherResponse> {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m`;
 
   const response = await fetch(url);
 
@@ -11,5 +19,5 @@ export async function fetchWeather(): Promise<WeatherResponse> {
   }
 
   const data = await response.json();
-  return data as WeatherResponse; 
+  return data as WeatherResponse;
 }
