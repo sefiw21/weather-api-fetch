@@ -1,19 +1,12 @@
 import "./style.css";
 import { fetchWeather } from "./api/WeatherApi";
-
-import type { WeatherResponse } from "./types/WeatherResponse";
 import { uiElements } from "./utils/dom";
-import { renderWeatherForecast } from "./render/WeatherForecast";
+import { renderWeatherForecast, renderMetadata } from "./render/WeatherForecast";
+import { getDaytimeForecast, type ProcessedWeather } from "./utils/weatherProcessor";
 
-let weatherData: WeatherResponse | null = null;
+// State variables
+let processedData: ProcessedWeather[] = []; // Store the processed data here
 let hoursToShow = 24;
-
-// Handle the Load More click
-uiElements.loadBtn.addEventListener("click", () => {
-  if (!weatherData) return;
-  hoursToShow += 24;
-  renderWeatherForecast(weatherData, hoursToShow);
-});
 
 async function init() {
   uiElements.list.innerHTML = `
@@ -23,8 +16,16 @@ async function init() {
   `;
 
   try {
-    weatherData = await fetchWeather(); 
-    renderWeatherForecast(weatherData, hoursToShow); 
+    const rawWeatherData = await fetchWeather(); 
+    //  Render the static metadata exactly once first
+    renderMetadata(rawWeatherData);
+    
+    // Process the daytime data 
+    processedData = getDaytimeForecast(rawWeatherData);
+    
+    //  Render the initial list
+    renderWeatherForecast(processedData, hoursToShow); 
+
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     uiElements.list.innerHTML = `
@@ -34,5 +35,11 @@ async function init() {
     `;
   }
 }
-
+// handle the Load More click
+uiElements.loadBtn.addEventListener("click", () => {
+  if (processedData.length === 0) return;
+  hoursToShow += 24;
+  // We only pass the processed data now
+  renderWeatherForecast(processedData, hoursToShow);
+});
 init();

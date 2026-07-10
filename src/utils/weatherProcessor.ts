@@ -10,12 +10,13 @@ export type ProcessedWeather = {
 export function getDaytimeForecast(data: WeatherResponse): ProcessedWeather[] {
   // destructure weather data
   const { hourly, hourly_units } = data;
-  // get unit of 
+
   // process data to unifiy it geting one flate array of objects
   const unifiedWeather = hourly.time.map((timeString, index) => ({
     dateObj: new Date(timeString),
     temp: hourly.temperature_2m[index],
-    unit: hourly_units.temperature_2m
+    unit: hourly_units.temperature_2m,
+
   }));
 
   // filter and return daytime hour form 8:00am to 6:00pm from unified data

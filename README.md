@@ -1,1 +1,1 @@
-# weather-api-fetch
+# weather-api-fetch app that show the day time forecast for Ethiopia
